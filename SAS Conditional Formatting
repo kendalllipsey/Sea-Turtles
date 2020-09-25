@@ -1,0 +1,42 @@
+data BHIC.main;
+	infile 'C:\Users\kdl8569\UNC-Wilmington\BHIC\final_data.csv' dsd truncover;
+	input Nest Observed$ Species$ PIT$ AE1$ LFF$ AE2$ RFF$ 
+		AE3$ CNT$ CNN$ CW$ SNT$ SNN$ SW$ Biopsy$ 
+		Incubation Rel_Eggs Eggs_Taken Hatched Unhatched
+		Live Dead Pipped Comments$ time$ hatchdate$ date$
+		hatchsuccess$ emergesuccess$ disVeg disHT final_lat
+		final_long final_acess$ treatment$ total_eggs orig_lat
+		orig_long reloc_lat reloc_long reloc_access$ access$ 
+		orig_beach$ reloc_beach$ tags$ returning_turtle$
+		disHT2 disVeg2 dna_id$ prev_tags$ first_action$ 
+		exit_time$ year;
+		hatchdate=input(hatchdate, ANYDTDTE.);
+		date = input(date, ANYDTDTE.);
+		year = input(year, ANYDTDTE.);
+		time = input(time, time.);
+		exit_time = input(exit_time, time.);
+		if treatment eq 'Y' then hatsuc = hatched/Rel_eggs;
+			else if treatment eq 'N' then hatsuc = hatched/total_eggs;
+
+run;
+
+*If then statement: if relocated then hatched/reloc_eggs, else hatched/total_eggs (check with Matthew Godrey) - PAH
+************************************************************;
+data BHIC.main_18;
+	infile 'C:\Users\kdl8569\UNC-Wilmington\BHIC\data_2018.csv' dsd;
+	input Nest Observed$ Species$ PIT$ AE1$ LFF$ AE2$ RFF$ 
+	AE3$ CNT$ CNN$ CW$ SNT$ SNN$ SW$ Biopsy$ hatchdate$ 
+	Incubation Rel_Eggs Eggs_Taken Hatched Unhatched 
+	No_embryo Embryo Live Dead Pipped Clutch_ct 
+	Emerge_Success Hatch_success Date$ Observed_time$ 
+	first_action$ location$ orig_lat orig_long treatment$
+	Dis_high_tide Dis_tide Dis_veg Rel_DHT Exit_time$ Goforth$ 
+	Comments$ set year reloc_lat reloc_long;
+	year = 2018;
+	hatchdate=input(hatchdate, ANYDTDTE.);
+	Date = input(Date, ANYDTDTE.);
+	year = input(year, year.);
+	Observed_time = input(Observed_time, time.);
+	exit_time = input(exit_time, time.);
+run;
+*********************************************************;
