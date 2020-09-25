@@ -1,0 +1,65 @@
+#SAS Hard Read in
+
+data dna;
+length Beach $12 County $12 Nest_management $12 Light_management $12
+Loc $20 Program $15 Inventorier $15 Data_Entry $15 Locator $15
+;
+infile 'Documents\BHIC\dna_data.csv' dsd truncover;
+input num dna_id$ UID Beach$ County$ Activity_A Activity_B$ Nest Ref$ Act_Date$
+Year Month Week Dayofyear JulianDate Act_Comments$ Encountered$ Species$ 
+Lat Long Zone Loc$ Nest_management$ Light_management$ Relocation$ Egg_total Relocations
+Reloc_date$ Reloc_reason Reloc_lat Reloc_long Relong_loc$ Washover Loss_Reports
+Prereloc Total_lost_eggs Total_lost_hatchlings Total_lost_nests Emergedate$ Inv_date$ 
+Incubation_days Clutch_ct Shells50 Unhatched_Eggs Dead_Hatclings Live_Hatchlings
+Final_Stat_Unknown Exclude Hatch_Success Emerge_Success DNA_sample$ DNA_match$
+Inv_Comments$ Data_Entry$ Inventorier$ Locator$ Submitted$ Modified$ Program$
+; 
+run;
+data accesses;
+infile 'Documents\BHIC\BHI_Coordinates.csv' dsd;
+input access lat long;
+run;
+
+data main;
+
+infile 'Documents\BHIC\final_data.csv' dsd truncover;
+input Nest Observed$ Species$ PIT$ AE1$ LFF$ AE2$ RFF$ AE3$ CNT$ CNN$ CW$ SNT$ SNN$ SW$ Biopsy$ 
+Incubation Rel_Eggs Eggs_Taken Hatched Unhatched Live Dead Pipped Comments$ time$ hatchdate$ date$
+hatchsuccess$ emergesuccess$ disVeg$ disHT$ final_lat final_long final_acess treatment$ total_eggs orig_lat
+orig_long reloc_lat reloc_long reloc_access access orig_beach$ reloc_beach$
+tags$ returning_turtle$ disHT2$ disVeg2$ dna_id$ prev_tags$ first_action$ exit_time$ year
+;
+data main_18;
+infile 'Documents\BHIC\data_2018.csv' dsd;
+input Nest Observed$ Species$ PIT$ AE1$ LFF$ AE2$ RFF$ AE3$ CNT$ CNN$ CW$ SNT$ SNN$ SW$ Biopsy$ hatchdate$ Incubation Rel_Eggs
+Eggs_Taken Hatched Unhatched No_embryo Embryo Live Dead Pipped Clutch_ct Emerge_Success Hatch_success Date$ Observed_time$ first_action$ location$ 
+orig_lat orig_long treatment$
+Dis_high_tide Dis_tide Dis_veg Rel_DHT Exit_time$ Goforth$ Comments$
+set year reloc_lat reloc_long;
+year = 2018;
+
+
+data merged18;
+  merge main main_18;
+    
+   proc sort data=merged18 out = work.mergedsorted;
+   by dna_id;
+   proc sort data=dna out = work.dnasorted;
+   by dna_id;
+   
+*data mergeddna;
+*merge mergedsorted dnasorted;
+*where year=2015;
+	
+  proc print data=merged18;
+  where year gt 2016;
+
+  proc print data=merged18;
+  var nest dna_id PIT LFF RFF prev_tags orig_lat orig_long reloc_lat reloc_long year;
+  where year gt 2016;
+  run;
+
+ 
+
+proc compare base=main compare=main_18;
+run;
