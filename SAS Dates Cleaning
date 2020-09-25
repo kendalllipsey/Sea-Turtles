@@ -1,0 +1,28 @@
+data BHIC.klmain;
+	infile 'C:\Users\kdl8569\Documents\Turtles\hopefullylast.csv' dsd truncover firstobs=2;
+	input nest observed $ :10. species $ PIT :$50. AE1$ LFF :$25. AE2$ RFF : $15. 
+		AE3$ CNT CNN CW SNT SNN SW biopsy$ 
+		incubation  rel_eggs eggs_taken hatched unhatched 
+		live dead pipped comments : $450. timee : $20. hatchdatee :$10.  datee :$10.
+		hatchsuccess : 10.  emergesuccess : 10. disVeg  disHT final_lat : 10.
+		final_long : 10. final_acess $ treatment $ total_eggs orig_lat :10.
+		orig_long : 10. reloc_lat : 10. reloc_long : 10. reloc_access $ access $ 
+		orig_beach $ reloc_beach $ tags $ returning_turtle $
+		disHT2 : disVeg2 : dna_id$ prev_tags : $98. first_action :$12.  
+		exit_timee : $19. yearr;
+		
+		hatchdate=input(compress(hatchdatee,'-'), date7.);
+		date = input(compress(datee,'-'),date7.);
+		year = input(yearr, year4.);
+		time = input(timee, time.);
+		exit_time = input(exit_timee, time.);
+		format date date9. hatchdate date9. time HHMM. exit_time HHMM. year year4. ;
+	
+		drop datee timee hatchdatee exit_timee yearr;
+		
+		
+		*if (treatment eq 'Y') and (Rel_eggs eq 0) then rel_eggs=' ';
+		*if treatment eq 'Y' then hatchsucc2 = hatched/Rel_eggs;
+			*else if treatment eq 'N' then hatchsucc2 = hatched/total_eggs;
+
+run;
